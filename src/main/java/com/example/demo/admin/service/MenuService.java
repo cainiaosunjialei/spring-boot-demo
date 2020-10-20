@@ -1,7 +1,10 @@
 package com.example.demo.admin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.admin.model.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface MenuService extends IService<Menu> {
 
     boolean create(Menu menu);
+
+    Page<Menu> list(Long parentId, Integer pageNum, Integer pageSize);
 }
