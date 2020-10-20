@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,18 +26,25 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .sessionManagement()// 基于token，所以不需要session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/admin/user/login", "/admin/user/register").permitAll()
-                .anyRequest().authenticated();
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry security = httpSecurity.authorizeRequests();
+        for (String url: ignoreUrlsConfig().getUrls()) {
+            security.antMatchers(url).permitAll();
+        }
+
+        // 允许跨域的OPTIONS请求
+        security.antMatchers(HttpMethod.OPTIONS).permitAll();
+
+        // 其他任何请求都需要身份认证
+        security.anyRequest().authenticated();
 
         httpSecurity.exceptionHandling()
                 .accessDeniedHandler(restfulAccessDeniedHandler())
@@ -44,9 +52,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-
     }
 
+    @Bean
+    public IgnoreUrlsConfig ignoreUrlsConfig() {
+        return new IgnoreUrlsConfig();
+    }
 
     @Bean
     public RestAuthenticationEntryPoint restAuthenticationEntryPoint() {
