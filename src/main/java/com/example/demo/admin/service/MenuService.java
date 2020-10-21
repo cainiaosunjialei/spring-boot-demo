@@ -19,4 +19,6 @@ public interface MenuService extends IService<Menu> {
     boolean create(Menu menu);
 
     Page<Menu> list(Long parentId, Integer pageNum, Integer pageSize);
+
+
 }

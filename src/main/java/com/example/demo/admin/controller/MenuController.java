@@ -53,8 +53,11 @@ public class MenuController {
         return Result.success(list);
     }
 
-//    @GetMapping("/{id}")
-//    public Result getItem()
+    @GetMapping("/{id}")
+    public Result getItem(@PathVariable Long id) {
+        Menu menu = menuService.getById(id);
+        return Result.success(menu);
+    }
 
 
 
