@@ -2,14 +2,19 @@ package com.example.demo.admin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.demo.admin.dto.MenuNode;
 import com.example.demo.admin.model.Menu;
 import com.example.demo.admin.mapper.MenuMapper;
 import com.example.demo.admin.service.MenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -49,5 +54,40 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         queryWrapper.lambda().eq(Menu::getParentId, parentId)
                 .orderByDesc(Menu::getSort);
         return page(page, queryWrapper);
+    }
+
+
+    @Override
+    public boolean update(Long id, Menu menu) {
+        menu.setId(id);
+        updateLevel(menu);
+        return updateById(menu);
+    }
+
+
+    @Override
+    public List<MenuNode> treeList() {
+        List<Menu> menuList = list();
+        List<MenuNode> nodes= convertMenuNode(0, menuList);
+        return nodes;
+    }
+
+    private MenuNode convertMenuNode(int pid, List<Menu> menuList) {
+
+        List<MenuNode> menuNodes = new ArrayList<>();
+
+        for (Menu menu: menus) {
+            MenuNode node = new MenuNode();
+            BeanUtils.copyProperties(menu, node);
+
+            List<Menu> list = menuList.stream()
+                    .filter(ele -> ele.getParentId().equals(menu.getId()))
+                    .collect(Collectors.toList());
+
+            menuNodes.add(node);
+            node.setChildren(convertMenuNode(list, menuList));
+        }
+
+        return menuNodes;
     }
 }

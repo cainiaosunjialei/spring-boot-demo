@@ -1,6 +1,7 @@
 package com.example.demo.admin.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.demo.admin.dto.MenuNode;
 import com.example.demo.admin.model.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -20,5 +21,7 @@ public interface MenuService extends IService<Menu> {
 
     Page<Menu> list(Long parentId, Integer pageNum, Integer pageSize);
 
+    boolean update(Long id, Menu menu);
 
+    List<MenuNode> treeList();
 }
