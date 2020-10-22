@@ -68,24 +68,21 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     public List<MenuNode> treeList() {
         List<Menu> menuList = list();
-        List<MenuNode> nodes= convertMenuNode(0, menuList);
-        return nodes;
+        return convertMenuNode(0L, menuList);
     }
 
-    private MenuNode convertMenuNode(int pid, List<Menu> menuList) {
+    private List<MenuNode> convertMenuNode(long pid, List<Menu> menuList) {
 
         List<MenuNode> menuNodes = new ArrayList<>();
 
-        for (Menu menu: menus) {
+        for (Menu menu: menuList) {
             MenuNode node = new MenuNode();
             BeanUtils.copyProperties(menu, node);
 
-            List<Menu> list = menuList.stream()
-                    .filter(ele -> ele.getParentId().equals(menu.getId()))
-                    .collect(Collectors.toList());
-
-            menuNodes.add(node);
-            node.setChildren(convertMenuNode(list, menuList));
+            if (menu.getParentId() == pid) {
+                menuNodes.add(node);
+                node.setChildren(convertMenuNode(menu.getId(), menuList));
+            }
         }
 
         return menuNodes;
