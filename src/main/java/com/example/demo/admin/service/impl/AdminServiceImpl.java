@@ -5,6 +5,9 @@ import com.example.demo.admin.dto.AdminLoginParam;
 import com.example.demo.admin.dto.RegisterParam;
 import com.example.demo.admin.model.Admin;
 import com.example.demo.admin.mapper.AdminMapper;
+import com.example.demo.admin.model.AdminRoleRelation;
+import com.example.demo.admin.model.Role;
+import com.example.demo.admin.service.AdminRoleRelationService;
 import com.example.demo.admin.service.AdminService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.common.Result;
@@ -18,9 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -38,6 +39,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private AdminRoleRelationService adminRoleRelationService;
 
     @Override
     public Result register(RegisterParam registerParam) {
@@ -86,5 +90,23 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             return new JwtUserDetails(user);
         }
         throw new ApiException("用户名不存在");
+    }
+
+
+    @Override
+    public boolean allocRole(Long adminId, List<Long> roleIds) {
+        QueryWrapper<AdminRoleRelation> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(AdminRoleRelation::getAdminId, adminId);
+        adminRoleRelationService.remove(queryWrapper);
+
+        List<AdminRoleRelation> list = new ArrayList<>();
+        for (Long roleId: roleIds) {
+            AdminRoleRelation adminRoleRelation = new AdminRoleRelation();
+            adminRoleRelation.setAdminId(adminId);
+            adminRoleRelation.setRoleId(roleId);
+
+            list.add(adminRoleRelation);
+        }
+        return adminRoleRelationService.saveBatch(list);
     }
 }

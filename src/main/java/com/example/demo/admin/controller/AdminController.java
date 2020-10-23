@@ -2,6 +2,7 @@ package com.example.demo.admin.controller;
 
 
 import com.example.demo.admin.dto.AdminLoginParam;
+import com.example.demo.admin.dto.AllocRoleParam;
 import com.example.demo.admin.dto.RegisterParam;
 import com.example.demo.admin.service.AdminService;
 import com.example.demo.common.Result;
@@ -33,6 +34,15 @@ public class AdminController {
     @PostMapping("/login")
     public Result login(@RequestBody AdminLoginParam adminLoginParam) {
         return adminService.login(adminLoginParam.getUsername(), adminLoginParam.getPassword());
+    }
+
+    @PostMapping("/allocRole")
+    public Result allocRole(@Validated @RequestBody AllocRoleParam allocRoleParam) {
+        boolean success = adminService.allocRole(allocRoleParam.getAdminId(), allocRoleParam.getRoleIds());
+        if (success) {
+            return Result.success();
+        }
+        return Result.failure();
     }
 
 

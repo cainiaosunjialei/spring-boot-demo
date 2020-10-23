@@ -4,8 +4,11 @@ import com.example.demo.admin.dto.AdminLoginParam;
 import com.example.demo.admin.dto.RegisterParam;
 import com.example.demo.admin.model.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.demo.admin.model.Role;
 import com.example.demo.common.Result;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,4 +25,6 @@ public interface AdminService extends IService<Admin> {
     Result login(String username, String passwords);
 
     UserDetails loadUserByUsername(String username);
+
+    boolean allocRole(Long adminId, List<Long> roleIds);
 }
