@@ -15,4 +15,14 @@
         <result column="hidden" property="hidden" />
     </resultMap>
 
+    <select id="getMenuListByRoleId" resultType="com.example.demo.admin.model.Menu">
+        SELECT
+            m.*
+        FROM
+            role_menu_relation AS rmr
+            LEFT JOIN menu AS m ON rmr.menu_id = m.id
+        WHERE
+            rmr.role_id = #{roleId}
+    </select>
+
 </mapper>

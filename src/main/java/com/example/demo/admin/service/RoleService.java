@@ -1,7 +1,12 @@
 package com.example.demo.admin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.demo.admin.model.Menu;
 import com.example.demo.admin.model.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +18,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RoleService extends IService<Role> {
 
+    Page<Role> list(Integer pageNum, Integer pageSize);
+
+    @Transactional
+    boolean allocMenu(Long roleId, List<Long> menuIds);
+
+    List<Menu> menuList(Long roleId);
 }
