@@ -66,4 +66,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     public List<Menu> menuList(Long roleId) {
         return menuMapper.getMenuListByRoleId(roleId);
     }
+
+    @Override
+    public List<Menu> getMenuListByAdminId(Long adminId) {
+        return menuMapper.getMenuListByAdminId(adminId);
+    }
 }

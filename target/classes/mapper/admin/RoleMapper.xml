@@ -13,4 +13,11 @@
         <result column="sort" property="sort" />
     </resultMap>
 
+    <select id="getRoleListByAdminId" resultType="com.example.demo.admin.model.Role">
+        SELECT
+            r.*
+        FROM
+            role AS r
+        LEFT JOIN admin_role_relation AS arr ON arr.role_id = r.id WHERE arr.admin_id = #{adminId}
+    </select>
 </mapper>

@@ -27,4 +27,8 @@ public interface AdminService extends IService<Admin> {
     UserDetails loadUserByUsername(String username);
 
     boolean allocRole(Long adminId, List<Long> roleIds);
+
+    List<Role> getRoleList(Long adminId);
+
+    Admin getAdminByUsername(String username);
 }

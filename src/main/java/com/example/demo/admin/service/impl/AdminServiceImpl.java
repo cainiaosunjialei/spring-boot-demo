@@ -3,6 +3,7 @@ package com.example.demo.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.admin.dto.AdminLoginParam;
 import com.example.demo.admin.dto.RegisterParam;
+import com.example.demo.admin.mapper.RoleMapper;
 import com.example.demo.admin.model.Admin;
 import com.example.demo.admin.mapper.AdminMapper;
 import com.example.demo.admin.model.AdminRoleRelation;
@@ -42,6 +43,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     @Autowired
     private AdminRoleRelationService adminRoleRelationService;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Override
     public Result register(RegisterParam registerParam) {
@@ -108,5 +112,17 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             list.add(adminRoleRelation);
         }
         return adminRoleRelationService.saveBatch(list);
+    }
+
+    @Override
+    public List<Role> getRoleList(Long adminId) {
+        return roleMapper.getRoleListByAdminId(adminId);
+    }
+
+    @Override
+    public Admin getAdminByUsername(String username) {
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(Admin::getUsername, username);
+        return baseMapper.selectOne(queryWrapper);
     }
 }

@@ -24,4 +24,6 @@ public interface RoleService extends IService<Role> {
     boolean allocMenu(Long roleId, List<Long> menuIds);
 
     List<Menu> menuList(Long roleId);
+
+    List<Menu> getMenuListByAdminId(Long adminId);
 }
