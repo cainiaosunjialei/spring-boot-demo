@@ -70,6 +70,7 @@ public class AdminController {
      * @param principal
      * @return
      */
+    @PreAuthorize("hasAuthority('test2')")
     @GetMapping("/info")
     public Result info(Principal principal) {
         String username = principal.getName();
